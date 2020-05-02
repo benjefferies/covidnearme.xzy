@@ -20,4 +20,3 @@ var/
 .serverless
 node_modules/
 .idea/
-public/
