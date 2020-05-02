@@ -12,7 +12,8 @@ class App extends React.Component {
     super()
     this.state = {
       districts: [""],
-      districtResults: {}
+      districtResults: {},
+      districtTotalResults: {}
     }
   }
   componentDidMount() {
@@ -31,8 +32,10 @@ class App extends React.Component {
       axios.get('https://psy7t39iz9.execute-api.eu-west-2.amazonaws.com/dev/covid?district=' + encodeURI(newValue))
       .then((response) => {
         let dailyResults = {}
+        let districtTotalResults = {}
         response.data.forEach(r => dailyResults[r.date] = r.daily)
-        this.setState({districtResults: dailyResults})
+        response.data.forEach(r => districtTotalResults[r.date] = r.total)
+        this.setState({districtResults: dailyResults, districtTotalResults: districtTotalResults})
       })
       .catch((error) => {
         // handle error
@@ -55,6 +58,7 @@ class App extends React.Component {
           }}
         />
         <LineChart data={this.state.districtResults} />
+        <LineChart data={this.state.districtTotalResults} />
       </div>
     );
   }
