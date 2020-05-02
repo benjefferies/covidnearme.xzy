@@ -1,0 +1,90 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: covidnearme
+custom:
+  pythonRequirements:
+    usePipenv: true
+#app: your-app-name
+#tenant: your-tenant-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: python3.7
+
+  # you can overwrite defaults here
+  #  stage: dev
+  region: eu-west-2
+
+  # you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+        - "s3:PutObject"
+      Resource:
+        - { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "CovidData" } ] ]  }
+        - { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "CovidData" }, "/*" ] ]  }
+
+# you can define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.py
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.py
+#    - exclude-me-dir/**
+
+functions:
+  covid:
+    handler: src/get_covid_data.handler
+    events:
+      - http:
+          path: covid
+          method: get
+          cors:
+            origin: '*' # <-- Specify allowed origin
+          request:
+            parameters:
+              querystrings:
+                url: true
+  district:
+    handler: src/get_districts.handler
+    events:
+      - http:
+          path: districts
+          method: get
+          cors:
+            origin: '*' # <-- Specify allowed origin
+  data_loader:
+    handler: src/data_loader.handler
+    events:
+      - schedule: rate(2 hours)
+
+# you can add CloudFormation resource templates here
+resources:
+  Resources:
+    CovidData:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: covidnear.me
+plugins:
+  - serverless-python-requirements
