@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from '@material-ui/core/styles'
 import ReactGA from 'react-ga';
+import CookieConsent from "react-cookie-consent";
 
 ReactGA.initialize('UA-165366022-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -130,6 +131,9 @@ class App extends React.Component {
             </div>
           </Grid>
         </Grid>
+        <CookieConsent>
+            This website uses cookies to enhance the user experience.
+        </CookieConsent>
       </div>
     );
   }
