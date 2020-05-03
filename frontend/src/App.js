@@ -108,7 +108,6 @@ class App extends React.Component {
               variant="outlined"
               id="daily-or-total-select"
               value={this.state.chart}
-              label="Search for your district"
               onChange={(event) => {
                 ReactGA.event({
                   category: 'User',
