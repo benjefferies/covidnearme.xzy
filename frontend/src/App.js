@@ -11,6 +11,8 @@ import Grid from "@material-ui/core/Grid";
 import { withStyles } from '@material-ui/core/styles'
 import ReactGA from 'react-ga';
 import CookieConsent from "react-cookie-consent";
+import linkedin from './linkedin.png';
+import github from './github-64px.png';
 
 ReactGA.initialize('UA-165366022-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -31,6 +33,17 @@ const styles = (theme) => ({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(2),
   },
+  icon: {
+    width: 'auto',
+    height: '64px',
+  },
+  footer: {
+    display: 'flex',
+    maxHeight: '100vh',
+    position: 'fixed;',
+    bottom: '0',
+    paddingBottom: '20px'
+  }
 });
 
 class App extends React.Component {
@@ -92,18 +105,21 @@ class App extends React.Component {
       <div className={classes.root}>
         <Grid container>
           <Grid item lg={3} xs={9} className={classes.search}>
-
             <Autocomplete
               id="district"
               freeSolo
               options={this.state.districts}
               renderInput={(params) => (
-                <TextField {...params} label="Search your district" variant="outlined" />
+                <TextField
+                  {...params}
+                  label="Search your district"
+                  variant="outlined"
+                />
               )}
               onChange={(event, newValue) => {
                 ReactGA.event({
                   category: 'User',
-                  action: 'Search district ' + newValue
+                  action: 'Search district ' + newValue,
                 });
                 this.updateChart(newValue);
               }}
@@ -118,10 +134,14 @@ class App extends React.Component {
               onChange={(event) => {
                 ReactGA.event({
                   category: 'User',
-                  action: 'Switch chart to ' + event.target.value + ' for ' + this.state.selectedDistrict
+                  action:
+                    'Switch chart to ' +
+                    event.target.value +
+                    ' for ' +
+                    this.state.selectedDistrict,
                 });
-                this.setState({ chart: event.target.value })}
-              }
+                this.setState({ chart: event.target.value });
+              }}
             >
               {this.state.charts.map((value, index) => {
                 return <MenuItem value={value}>{value}</MenuItem>;
@@ -130,17 +150,39 @@ class App extends React.Component {
           </Grid>
           <Grid item xs={12} className={classes.lineChart}>
             <div>
-          {this.state.chart === "daily" ? (
-            <LineChart ytitle="Daily cases" height="70vh" data={this.state.districtResults} />
-          ) : null}
-          {this.state.chart === "total" ? (
-            <LineChart ytitle="Total cases" height="70vh" data={this.state.districtTotalResults} />
-          ) : null}
+              {this.state.chart === 'daily' ? (
+                <LineChart
+                  ytitle="Daily cases"
+                  height="70vh"
+                  data={this.state.districtResults}
+                />
+              ) : null}
+              {this.state.chart === 'total' ? (
+                <LineChart
+                  ytitle="Total cases"
+                  height="70vh"
+                  data={this.state.districtTotalResults}
+                />
+              ) : null}
             </div>
           </Grid>
         </Grid>
+        <Grid
+          className={classes.footer}
+          container
+          direction="row"
+          justify="center"
+          alignItems="flex-end"
+        >
+          <a href='https://www.linkedin.com/in/ben-jefferies-0bb1b24b/'>
+            <img src={linkedin} className={classes.icon} />
+            </a>
+          <a href='https://github.com/benjefferies/covidnearme.xzy'>
+          <img src={github} className={classes.icon} />
+          </a>
+        </Grid>
         <CookieConsent>
-            This website uses cookies to enhance the user experience.
+          This website uses cookies to enhance the user experience.
         </CookieConsent>
       </div>
     );
