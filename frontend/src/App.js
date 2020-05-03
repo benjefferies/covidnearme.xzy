@@ -55,8 +55,8 @@ class App extends React.Component {
       districts: [""],
       districtResults: {},
       districtTotalResults: {},
-      charts: ["daily", "total"],
-      chart: "daily",
+      charts: ["Daily", "Total"],
+      chart: "Daily",
       selectedDistrict: ""
     };
   }
