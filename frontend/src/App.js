@@ -37,6 +37,7 @@ class App extends React.Component {
       districtTotalResults: {},
       charts: ["daily", "total"],
       chart: "daily",
+      selectedDistrict: ""
     };
   }
   componentDidMount() {
@@ -70,6 +71,7 @@ class App extends React.Component {
           this.setState({
             districtResults: dailyResults,
             districtTotalResults: districtTotalResults,
+            selectedDistrict: newValue
           });
         })
         .catch((error) => {
@@ -110,7 +112,7 @@ class App extends React.Component {
               onChange={(event) => {
                 ReactGA.event({
                   category: 'User',
-                  action: 'Switch chart to ' + event.target.value 
+                  action: 'Switch chart to ' + event.target.value + ' for ' + this.state.selectedDistrict
                 });
                 this.setState({ chart: event.target.value })}
               }
