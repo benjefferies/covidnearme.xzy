@@ -9,6 +9,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from '@material-ui/core/styles'
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-165366022-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const styles = (theme) => ({
   root: {
@@ -88,6 +92,10 @@ class App extends React.Component {
                 <TextField {...params} label="Search your district" variant="outlined" />
               )}
               onChange={(event, newValue) => {
+                ReactGA.event({
+                  category: 'User',
+                  action: 'Select District'
+                });
                 this.updateChart(newValue);
               }}
             />
@@ -98,7 +106,13 @@ class App extends React.Component {
               id="daily-or-total-select"
               value={this.state.chart}
               label="Search for your district"
-              onChange={(event) => this.setState({ chart: event.target.value })}
+              onChange={(event) => {
+                ReactGA.event({
+                  category: 'User',
+                  action: 'Switch chart to ' + event.target.value 
+                });
+                this.setState({ chart: event.target.value })}
+              }
             >
               {this.state.charts.map((value, index) => {
                 return <MenuItem value={value}>{value}</MenuItem>;
