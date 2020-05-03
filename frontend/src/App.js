@@ -104,7 +104,7 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <Grid container>
-          <Grid item lg={3} xs={9} className={classes.search}>
+          <Grid item lg={3} xs={8} className={classes.search}>
             <Autocomplete
               id="district"
               freeSolo
@@ -126,7 +126,7 @@ class App extends React.Component {
             />
           </Grid>
 
-          <Grid item lg={3} xs={3} className={classes.chartType}>
+          <Grid item lg={3} xs={4} className={classes.chartType}>
             <Select
               variant="outlined"
               id="daily-or-total-select"
