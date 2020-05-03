@@ -37,7 +37,7 @@ const styles = (theme) => ({
   },
   icon: {
     width: 'auto',
-    height: '64px',
+    height: '32px',
   },
   footer: {
     display: 'flex',
@@ -114,7 +114,7 @@ class App extends React.Component {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Search your district"
+                  label="District search"
                   variant="outlined"
                 />
               )}
