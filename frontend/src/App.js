@@ -97,7 +97,7 @@ class App extends React.Component {
               onChange={(event, newValue) => {
                 ReactGA.event({
                   category: 'User',
-                  action: 'Select District ' + newValue
+                  action: 'Search district ' + newValue
                 });
                 this.updateChart(newValue);
               }}
