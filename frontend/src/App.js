@@ -14,7 +14,7 @@ import CookieConsent from "react-cookie-consent";
 ReactGA.initialize('UA-165366022-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
 
-const api = "https://api.covidnearme.xyz/prod"
+const api = "https://pn6ecfl253.execute-api.eu-west-2.amazonaws.com/prod"
 
 const styles = (theme) => ({
   root: {
