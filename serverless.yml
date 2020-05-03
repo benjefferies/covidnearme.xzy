@@ -94,23 +94,16 @@ resources:
       Type: AWS::Route53::HostedZone
       Properties:
         Name: covidnearme.xyz
-    CovidNearMeRecord:
-      Type: AWS::Route53::RecordSet
-      Properties:
-        HostedZoneName: covidnearme.xyz
-        Name: covidnearme.xyz
-        ResourceRecords:
-          - 104.198.14.52
-        TTL: '900'
-        Type: A
-    CovidNearMeRecordWWW:
-      Type: AWS::Route53::RecordSet
-      Properties:
-        HostedZoneName: covidnearme.xyz
-        Name: www.covidnearme.xyz
-        ResourceRecords:
-          - 104.198.14.52
-        TTL: '900'
-        Type: A
+        RecordSets:
+          - Name: covidnearme.xyz
+            Type: A
+            TTL: '900'
+            ResourceRecords:
+              - 104.198.14.52
+          - Name: www.covidnearme.xyz
+            Type: A
+            TTL: '900'
+            ResourceRecords:
+              - 104.198.14.52
 plugins:
   - serverless-python-requirements
