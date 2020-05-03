@@ -42,7 +42,7 @@ const styles = (theme) => ({
   footer: {
     display: 'flex',
     maxHeight: '100vh',
-    position: 'fixed;',
+    // position: 'fixed;',
     bottom: '0',
     paddingBottom: '20px'
   }
