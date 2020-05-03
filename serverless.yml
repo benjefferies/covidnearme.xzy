@@ -97,7 +97,7 @@ resources:
     CovidNearMeRecord:
       Type: AWS::Route53::RecordSet
       Properties:
-        HostedZoneName: !Ref 'CovidNearMeZone'
+        HostedZoneId: !Ref 'CovidNearMeZone'
         Name: covidnearme.xyz
         ResourceRecords:
           - 104.198.14.52
@@ -106,7 +106,7 @@ resources:
     CovidNearMeRecordWWW:
       Type: AWS::Route53::RecordSet
       Properties:
-        HostedZoneName: !Ref 'CovidNearMeZone'
+        HostedZoneId: !Ref 'CovidNearMeZone'
         Name: www.covidnearme.xyz
         ResourceRecords:
           - 104.198.14.52
