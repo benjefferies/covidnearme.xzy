@@ -125,10 +125,10 @@ class App extends React.Component {
           <Grid item xs={12} className={classes.lineChart}>
             <div>
           {this.state.chart === "daily" ? (
-            <LineChart height="70vh" data={this.state.districtResults} />
+            <LineChart xtitle="Date" ytitle="Daily cases" height="70vh" data={this.state.districtResults} />
           ) : null}
           {this.state.chart === "total" ? (
-            <LineChart height="70vh" data={this.state.districtTotalResults} />
+            <LineChart xtitle="Date" ytitle="Total cases" height="70vh" data={this.state.districtTotalResults} />
           ) : null}
             </div>
           </Grid>
