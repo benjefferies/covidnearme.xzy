@@ -1,7 +1,7 @@
 import json
 import boto3
 
-bucket = "covidnear.me"
+bucket = "covidnearme.xyz"
 key = "coronavirus-cases.json"
 
 

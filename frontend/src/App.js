@@ -17,6 +17,8 @@ import github from './github-64px.png';
 ReactGA.initialize('UA-165366022-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
 
+const api = "https://pn6ecfl253.execute-api.eu-west-2.amazonaws.com/prod"
+
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -61,7 +63,7 @@ class App extends React.Component {
   componentDidMount() {
     axios
       .get(
-        "https://psy7t39iz9.execute-api.eu-west-2.amazonaws.com/dev/districts"
+        `${api}/districts`
       )
       .then((response) => {
         this.setState({ districts: response.data });
@@ -76,7 +78,7 @@ class App extends React.Component {
     if (this.state.districts.includes(newValue)) {
       axios
         .get(
-          "https://psy7t39iz9.execute-api.eu-west-2.amazonaws.com/dev/covid?district=" +
+          `${api}/covid?district=` +
             encodeURI(newValue)
         )
         .then((response) => {

@@ -2,7 +2,7 @@ import json
 import requests
 import boto3
 
-bucket = "covidnear.me"
+bucket = "covidnearme.xyz"
 cases_key = "coronavirus-cases.json"
 districts_key = "districts.json"
 
