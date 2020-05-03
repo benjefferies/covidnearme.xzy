@@ -20,12 +20,17 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
   search: {
-    marginTop: "15px",
-    padding: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    paddingLeft: theme.spacing(9),
   },
   lineChart: {
     padding: theme.spacing(2),
-  }
+  },
+  chartType: {
+    paddingTop: theme.spacing(4),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+  },
 });
 
 class App extends React.Component {
@@ -86,7 +91,7 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <Grid container>
-          <Grid item xs={8} className={classes.search}>
+          <Grid item xs={10} className={classes.search}>
             <Autocomplete
               id="district"
               freeSolo
@@ -103,7 +108,7 @@ class App extends React.Component {
               }}
             />
           </Grid>
-          <Grid item xs={1} className={classes.search}>
+          <Grid item xs={1} className={classes.chartType}>
             <Select
               variant="outlined"
               id="daily-or-total-select"
