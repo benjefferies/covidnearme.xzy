@@ -91,7 +91,8 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <Grid container>
-          <Grid item xs={10} className={classes.search}>
+          <Grid item lg={3} xs={9} className={classes.search}>
+
             <Autocomplete
               id="district"
               freeSolo
@@ -108,7 +109,8 @@ class App extends React.Component {
               }}
             />
           </Grid>
-          <Grid item xs={1} className={classes.chartType}>
+
+          <Grid item lg={3} xs={3} className={classes.chartType}>
             <Select
               variant="outlined"
               id="daily-or-total-select"
@@ -129,10 +131,10 @@ class App extends React.Component {
           <Grid item xs={12} className={classes.lineChart}>
             <div>
           {this.state.chart === "daily" ? (
-            <LineChart xtitle="Date" ytitle="Daily cases" height="70vh" data={this.state.districtResults} />
+            <LineChart ytitle="Daily cases" height="70vh" data={this.state.districtResults} />
           ) : null}
           {this.state.chart === "total" ? (
-            <LineChart xtitle="Date" ytitle="Total cases" height="70vh" data={this.state.districtTotalResults} />
+            <LineChart ytitle="Total cases" height="70vh" data={this.state.districtTotalResults} />
           ) : null}
             </div>
           </Grid>
