@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import { LineChart } from "react-chartkick";
 import "chart.js";
 import axios from "axios";
@@ -11,8 +10,6 @@ import Grid from "@material-ui/core/Grid";
 import { withStyles } from '@material-ui/core/styles'
 import ReactGA from 'react-ga';
 import CookieConsent from "react-cookie-consent";
-import linkedin from './linkedin.png';
-import github from './github-64px.png';
 
 ReactGA.initialize('UA-165366022-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -168,20 +165,6 @@ class App extends React.Component {
               ) : null}
             </div>
           </Grid>
-        </Grid>
-        <Grid
-          className={classes.footer}
-          container
-          direction="row"
-          justify="center"
-          alignItems="flex-end"
-        >
-          <a href='https://www.linkedin.com/in/ben-jefferies-0bb1b24b/'>
-            <img src={linkedin} className={classes.icon} />
-            </a>
-          <a href='https://github.com/benjefferies/covidnearme.xzy'>
-          <img src={github} className={classes.icon} />
-          </a>
         </Grid>
         <CookieConsent>
           This website uses cookies to enhance the user experience.
