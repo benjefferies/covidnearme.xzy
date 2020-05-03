@@ -79,13 +79,13 @@ class App extends React.Component {
     return (
       <div className={classes.root}>
         <Grid container>
-          <Grid item xs={11} className={classes.search}>
+          <Grid item xs={8} className={classes.search}>
             <Autocomplete
               id="district"
               freeSolo
               options={this.state.districts}
               renderInput={(params) => (
-                <TextField {...params} label="Search for your district" variant="outlined" />
+                <TextField {...params} label="Search your district" variant="outlined" />
               )}
               onChange={(event, newValue) => {
                 this.updateChart(newValue);
