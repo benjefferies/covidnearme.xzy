@@ -28,7 +28,7 @@ package:
 
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.5
 
   # you can overwrite defaults here
   #  stage: dev
