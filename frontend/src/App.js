@@ -7,16 +7,16 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Grid from "@material-ui/core/Grid";
-import { withStyles } from '@material-ui/core/styles'
-import ReactGA from 'react-ga';
+import { withStyles } from "@material-ui/core/styles";
+import ReactGA from "react-ga";
 import CookieConsent from "react-cookie-consent";
 
-var sma = require('sma');
+var sma = require("sma");
 
-ReactGA.initialize('UA-165366022-1');
+ReactGA.initialize("UA-165366022-1");
 ReactGA.pageview(window.location.pathname + window.location.search);
 
-const api = "https://pn6ecfl253.execute-api.eu-west-2.amazonaws.com/prod"
+const api = "https://pn6ecfl253.execute-api.eu-west-2.amazonaws.com/prod";
 
 const styles = (theme) => ({
   root: {
@@ -35,16 +35,16 @@ const styles = (theme) => ({
     paddingRight: theme.spacing(2),
   },
   icon: {
-    width: 'auto',
-    height: '32px',
+    width: "auto",
+    height: "32px",
   },
   footer: {
-    display: 'flex',
-    maxHeight: '100vh',
+    display: "flex",
+    maxHeight: "100vh",
     // position: 'fixed;',
-    bottom: '0',
-    paddingBottom: '20px'
-  }
+    bottom: "0",
+    paddingBottom: "20px",
+  },
 });
 
 class App extends React.Component {
@@ -52,18 +52,17 @@ class App extends React.Component {
     super();
     this.state = {
       districts: [""],
-      districtResults: {},
-      districtTotalResults: {},
-      charts: ["Daily", "Total"],
-      chart: "Daily",
-      selectedDistrict: ""
+      districtCases: {},
+      districtDeaths: {},
+      districtTotals: {},
+      charts: ["Cases", "Deaths", "Total"],
+      chart: "Cases",
+      selectedDistrict: "",
     };
   }
   componentDidMount() {
     axios
-      .get(
-        `${api}/districts`
-      )
+      .get(`${api}/districts`)
       .then((response) => {
         this.setState({ districts: response.data });
       })
@@ -76,21 +75,30 @@ class App extends React.Component {
   updateChart(newValue) {
     if (this.state.districts.includes(newValue)) {
       axios
-        .get(
-          `${api}/covid?district=` +
-            encodeURI(newValue)
-        )
+        .get(`${api}/covid/all?district=` + encodeURI(newValue))
         .then((response) => {
-          let dailyResults = {};
-          let districtTotalResults = {};
-          response.data.forEach((r) => (dailyResults[r.date] = r.daily));
-          response.data.forEach(
-            (r) => (districtTotalResults[r.date] = r.total)
-          );
+          let casesDaily = {};
+          let casesTotal = {};
+          let deathsDaily = {};
+          let deathsTotal = {};
+          Object.keys(response.data).forEach((r) => {
+            if (response.data[r]["casesDaily"] !== undefined)
+              casesDaily[r] = response.data[r]["casesDaily"];
+            if (response.data[r]["deathsDaily"] !== undefined)
+              deathsDaily[r] = response.data[r]["deathsDaily"];
+            if (response.data[r]["casesTotal"] !== undefined)
+              casesTotal[r] = response.data[r]["casesTotal"];
+            if (response.data[r]["deathsTotal"] !== undefined)
+            deathsTotal[r] = deathsTotal[r] = response.data[r]["deathsTotal"];
+          });
           this.setState({
-            districtResults: this.calculateSMA(dailyResults),
-            districtTotalResults: districtTotalResults,
-            selectedDistrict: newValue
+            districtCases: this.calculateSMA("Cases", casesDaily),
+            districtDeaths: this.calculateSMA("Cases", deathsDaily),
+            districtTotals: [
+              { name: "Cases", data: casesTotal },
+              { name: "Deaths", data: deathsTotal },
+            ],
+            selectedDistrict: newValue,
           });
         })
         .catch((error) => {
@@ -99,18 +107,18 @@ class App extends React.Component {
         });
     }
   }
-  
-  calculateSMA(dailyResults) {
-    let allDailyResults = []
 
-    let keys = []
+  calculateSMA(label, casesDaily) {
+    let allcasesDaily = [];
+
+    let keys = [];
     let values = [];
 
-    for (let [key, value] of Object.entries(dailyResults)) {
+    for (let [key, value] of Object.entries(casesDaily)) {
       keys.push(key);
       values.push(value);
     }
-    
+
     let smaValues = sma(values, 7);
     let smaResults = {};
 
@@ -118,17 +126,17 @@ class App extends React.Component {
       smaResults[keys[index]] = parseFloat(smaValues[index]);
     }
 
-    allDailyResults.push(this.createLine("Daily", dailyResults));
-    allDailyResults.push(this.createLine("7 Day SMA", smaResults));
+    allcasesDaily.push(this.createLine(label, casesDaily));
+    allcasesDaily.push(this.createLine("7 Day SMA", smaResults));
 
-    return allDailyResults;
+    return allcasesDaily;
   }
 
   createLine(name, lineData) {
     return {
       name: name,
-      data: lineData
-    }
+      data: lineData,
+    };
   }
 
   render() {
@@ -150,8 +158,8 @@ class App extends React.Component {
               )}
               onChange={(event, newValue) => {
                 ReactGA.event({
-                  category: 'User',
-                  action: 'Search district ' + newValue,
+                  category: "User",
+                  action: "Search district " + newValue,
                 });
                 this.updateChart(newValue);
               }}
@@ -165,35 +173,42 @@ class App extends React.Component {
               value={this.state.chart}
               onChange={(event) => {
                 ReactGA.event({
-                  category: 'User',
+                  category: "User",
                   action:
-                    'Switch chart to ' +
+                    "Switch chart to " +
                     event.target.value +
-                    ' for ' +
+                    " for " +
                     this.state.selectedDistrict,
                 });
                 this.setState({ chart: event.target.value });
               }}
             >
               {this.state.charts.map((value, index) => {
-                return <MenuItem value={value}>{value}</MenuItem>;
+                return <MenuItem key={index} value={value}>{value}</MenuItem>;
               })}
             </Select>
           </Grid>
           <Grid item xs={12} className={classes.lineChart}>
             <div>
-              {this.state.chart === 'Daily' ? (
+              {this.state.chart === "Cases" ? (
                 <LineChart
                   ytitle="Daily cases"
                   height="70vh"
-                  data={this.state.districtResults}
+                  data={this.state.districtCases}
                 />
               ) : null}
-              {this.state.chart === 'Total' ? (
+              {this.state.chart === "Deaths" ? (
+                <LineChart
+                  ytitle="Daily deaths"
+                  height="70vh"
+                  data={this.state.districtDeaths}
+                />
+              ) : null}
+              {this.state.chart === "Total" ? (
                 <LineChart
                   ytitle="Total cases"
                   height="70vh"
-                  data={this.state.districtTotalResults}
+                  data={this.state.districtTotals}
                 />
               ) : null}
             </div>

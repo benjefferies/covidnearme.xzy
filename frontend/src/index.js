@@ -8,15 +8,15 @@ import github from './github-64px.png';
 
 ReactDOM.render(
   <React.StrictMode>
-    <div class="content">
+    <div className="content">
     <App />
     </div>
-    <div class="footer">
+    <div className="footer">
       <a href='https://www.linkedin.com/in/ben-jefferies-0bb1b24b/'>
-        <img src={linkedin} class="icon" alt="linkedin" />
+        <img src={linkedin} className="icon" alt="linkedin" />
         </a>
       <a href='https://github.com/benjefferies/covidnearme.xzy'>
-      <img src={github} class="icon" alt="github" />
+      <img src={github} className="icon" alt="github" />
       </a>
     </div>
   </React.StrictMode>,

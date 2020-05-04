@@ -36,6 +36,18 @@ functions:
             parameters:
               querystrings:
                 url: true
+  covid_cases_and_death:
+    handler: src/get_covid_cases_and_deaths_data.handler
+    events:
+      - http:
+          path: covid/all
+          method: get
+          cors:
+            origin: '*'
+          request:
+            parameters:
+              querystrings:
+                url: true
   district:
     handler: src/get_districts.handler
     events:

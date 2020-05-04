@@ -23,7 +23,15 @@ def handler(event, context):
     deaths = get_deaths()
     district_to_deaths = map_district_to_deaths(deaths)
     merged_data = merge(district_cases, district_to_deaths)
+    fill_empties(merged_data)
     upload_cases(merged_data, s3)
+
+
+def fill_empties(data):
+    for district in data.keys():
+        for date in data[district]:
+            if "casesDaily" not in data[district][date]: data[district][date]["casesDaily"] = 0
+            if "deathsDaily" not in data[district][date]: data[district][date]["deathsDaily"] = 0
 
 
 def merge(d, u):
@@ -52,6 +60,10 @@ def map_district_to_deaths(deaths):
         else:
             districts_deaths_per_day[district] = {date: {"deathsDaily": deaths[hospital][date]} for date in deaths[hospital].keys()}
     calculate_death_totals(districts_deaths_per_day)
+
+    if "City of Bristol" in districts_deaths_per_day:
+        districts_deaths_per_day["Bristol, City of"] = districts_deaths_per_day["City of Bristol"]
+        del districts_deaths_per_day["City of Bristol"]
     return districts_deaths_per_day
 
 
