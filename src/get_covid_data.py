@@ -20,13 +20,8 @@ def handler(event, context):
     district = event["queryStringParameters"]["district"]
     district_cases = []
     print("Filtering data for " + district)
-    for case in covid_data["utlas"]:
-        if case["areaName"] == district:
-            district_cases.append({
-                "date": case["specimenDate"],
-                "daily": case["dailyLabConfirmedCases"],
-                "total": case["totalLabConfirmedCases"],
-            })
+    if district in covid_data:
+        district_cases = covid_data[district]
     print("Filtered data for " + district)
     return {
         "statusCode": 200,

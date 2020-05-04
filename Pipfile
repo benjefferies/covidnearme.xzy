@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 boto3 = "*"
 requests = "*"
+openpyxl = "*"
+googlemaps = "*"
 
 [requires]
 python_version = "3.7"
