@@ -16,7 +16,7 @@ jobs:
     - name: serverless deploy
       uses: benjefferies/github-action@master
       with:
-        args: -c "serverless plugin install --name serverless-python-requirements && serverless deploy --verbose"
+        args: -c "cat serverless.yml | envsubst '$GOOGLE_PLACES_API_KEY' | sponge serverless.yml && serverless plugin install --name serverless-python-requirements && serverless deploy --verbose"
         entrypoint: /bin/bash
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
