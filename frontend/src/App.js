@@ -11,6 +11,8 @@ import { withStyles } from '@material-ui/core/styles'
 import ReactGA from 'react-ga';
 import CookieConsent from "react-cookie-consent";
 
+var sma = require('sma');
+
 ReactGA.initialize('UA-165366022-1');
 ReactGA.pageview(window.location.pathname + window.location.search);
 
@@ -86,7 +88,7 @@ class App extends React.Component {
             (r) => (districtTotalResults[r.date] = r.total)
           );
           this.setState({
-            districtResults: dailyResults,
+            districtResults: this.calculateSMA(dailyResults),
             districtTotalResults: districtTotalResults,
             selectedDistrict: newValue
           });
@@ -95,6 +97,37 @@ class App extends React.Component {
           // handle error
           console.log(error);
         });
+    }
+  }
+  
+  calculateSMA(dailyResults) {
+    let allDailyResults = []
+
+    let keys = []
+    let values = [];
+
+    for (let [key, value] of Object.entries(dailyResults)) {
+      keys.push(key);
+      values.push(value);
+    }
+    
+    let smaValues = sma(values, 7);
+    let smaResults = {};
+
+    for (let index = 0; index < smaValues.length; index++) {
+      smaResults[keys[index]] = parseFloat(smaValues[index]);
+    }
+
+    allDailyResults.push(this.createLine("Daily", dailyResults));
+    allDailyResults.push(this.createLine("7 Day SMA", smaResults));
+
+    return allDailyResults;
+  }
+
+  createLine(name, lineData) {
+    return {
+      name: name,
+      data: lineData
     }
   }
 
