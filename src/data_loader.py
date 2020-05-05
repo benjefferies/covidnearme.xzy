@@ -106,7 +106,7 @@ def get_deaths():
 
 
 def get_deaths_url(date):
-    date_path = f"{int(date.strftime('%d')) - 1}/{date.strftime('%Y')}/{date.strftime('%m')}"  # Date path is zero offset
+    date_path = f"2/{date.strftime('%Y')}/{date.strftime('%m')}"  # Date path is zero offset
     date_file = f"{int(date.strftime('%d'))}-{date.strftime('%b-%Y')}"
     file_uri = f"https://www.england.nhs.uk/statistics/wp-content/uploads/sites/{date_path}/COVID-19-total-announced-deaths-{date_file}.xlsx"
     return file_uri
