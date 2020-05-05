@@ -58,7 +58,7 @@ functions:
             origin: '*'
   data_loader:
     handler: src/data_loader.handler
-    timeout: 200
+    timeout: 400
     environment:
       GOOGLE_PLACES_API_KEY: $GOOGLE_PLACES_API_KEY
     events:
