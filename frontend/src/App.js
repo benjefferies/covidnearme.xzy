@@ -121,10 +121,15 @@ class App extends React.Component {
     }
 
     let smaValues = smooth(values, 7);
+
+    let smaRoundValues = smaValues.map(num => {
+      return Math.round(num * 10) / 10;
+    });
+
     let smaResults = {};
 
-    for (let index = 0; index < smaValues.length; index++) {
-      smaResults[keys[index]] = parseFloat(smaValues[index]);
+    for (let index = 0; index < smaRoundValues.length; index++) {
+      smaResults[keys[index]] = parseFloat(smaRoundValues[index]);
     }
 
     allcasesDaily.push(this.createLine(label, casesDaily));
