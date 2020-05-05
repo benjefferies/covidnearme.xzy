@@ -10,8 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/core/styles";
 import ReactGA from "react-ga";
 import CookieConsent from "react-cookie-consent";
-
-var sma = require("sma");
+import smooth from 'array-smooth';
 
 ReactGA.initialize("UA-165366022-1");
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -92,8 +91,8 @@ class App extends React.Component {
             deathsTotal[r] = deathsTotal[r] = response.data[r]["deathsTotal"];
           });
           this.setState({
-            districtCases: this.calculateSMA("Cases", casesDaily),
-            districtDeaths: this.calculateSMA("Cases", deathsDaily),
+            districtCases: this.calculateAverage("Cases", casesDaily),
+            districtDeaths: this.calculateAverage("Cases", deathsDaily),
             districtTotals: [
               { name: "Cases", data: casesTotal },
               { name: "Deaths", data: deathsTotal },
@@ -108,18 +107,20 @@ class App extends React.Component {
     }
   }
 
-  calculateSMA(label, casesDaily) {
+  calculateAverage(label, casesDaily) {
     let allcasesDaily = [];
 
     let keys = [];
     let values = [];
 
     for (let [key, value] of Object.entries(casesDaily)) {
-      keys.push(key);
-      values.push(value);
+      if(value !== 0) {
+        keys.push(key);
+        values.push(value);
+      }
     }
 
-    let smaValues = sma(values, 7);
+    let smaValues = smooth(values, 7);
     let smaResults = {};
 
     for (let index = 0; index < smaValues.length; index++) {
@@ -137,6 +138,13 @@ class App extends React.Component {
       name: name,
       data: lineData,
     };
+  }
+
+  formatDate(date) { 
+    if (date < 10) {
+      date = "0" + date;
+    }
+    return date;
   }
 
   render() {
@@ -195,6 +203,7 @@ class App extends React.Component {
                   ytitle="Daily cases"
                   height="70vh"
                   data={this.state.districtCases}
+                  library={{spanGaps: true}}
                 />
               ) : null}
               {this.state.chart === "Deaths" ? (
@@ -202,6 +211,7 @@ class App extends React.Component {
                   ytitle="Daily deaths"
                   height="70vh"
                   data={this.state.districtDeaths}
+                  library={{spanGaps: true}}
                 />
               ) : null}
               {this.state.chart === "Total" ? (
@@ -209,6 +219,7 @@ class App extends React.Component {
                   ytitle="Total cases"
                   height="70vh"
                   data={this.state.districtTotals}
+                  library={{spanGaps: true}}
                 />
               ) : null}
             </div>
