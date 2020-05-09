@@ -51,7 +51,7 @@ def map_district_to_deaths(deaths):
         if len(places["candidates"]) == 0:
             print(f"Warning could not find address for {hospital}. Skipping...")
             continue
-        place_details = place(gmaps, places["candidates"][0]['place_id'])
+        place_details = place(gmaps, places["candidates"][0]['place_id'], fields=["address_component"])
         district = next(iter([p["long_name"] for p in place_details["result"]["address_components"] if "administrative_area_level_2" in p["types"]]))
         if len(places) > 1:
             print(f"Using {district} more than one address for {hospital}, using data {', '.join([p['short_name'] for p in place_details['result']['address_components']])}")
