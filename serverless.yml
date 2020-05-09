@@ -62,7 +62,7 @@ functions:
     environment:
       GOOGLE_PLACES_API_KEY: $GOOGLE_PLACES_API_KEY
     events:
-      - schedule: rate(2 hours)
+      - schedule: rate(12 hours)
 
 resources:
   Resources:
