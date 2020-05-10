@@ -7,6 +7,8 @@ import googlemaps
 import requests
 import boto3
 from datetime import datetime, timedelta
+
+from botocore.exceptions import ClientError
 from dateutil.parser import parse
 from googlemaps.places import find_place, place
 
@@ -15,16 +17,41 @@ from openpyxl import load_workbook
 bucket = "covidnearme.xyz"
 cases_key = "coronavirus-data.json"
 districts_key = "districts.json"
+hospital_lookup_key = "hospital-lookup.json"
 
 
 def handler(event, context):
     s3 = boto3.client('s3')
     district_cases = get_cases()
     deaths = get_deaths()
-    district_to_deaths = map_district_to_deaths(deaths)
+    hospital_lookup = get_hospital_to_district(s3, deaths)
+    district_to_deaths = map_district_to_deaths(hospital_lookup, deaths)
     merged_data = merge(district_cases, district_to_deaths)
     fill_empties(merged_data)
     upload_cases(merged_data, s3)
+
+
+def get_hospital_to_district(s3, deaths):
+    gmaps = googlemaps.Client(key=os.getenv("GOOGLE_PLACES_API_KEY"))
+    hospital_lookup = {}
+    try:
+        hospital_lookup_obj = s3.get_object(Bucket=bucket, Key=hospital_lookup_key)
+        hospital_lookup = json.loads(hospital_lookup_obj['Body'].read())
+    except ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            print(f"File {hospital_lookup_key} does not exist yet")
+    new_hospitals = deaths.keys() - hospital_lookup.keys()
+    for hospital in new_hospitals:
+        places = find_place(gmaps, [hospital], "textquery", fields=["place_id"])
+        if len(places["candidates"]) == 0:
+            print(f"Warning could not find address for {hospital}. Skipping...")
+            continue
+        place_details = place(gmaps, places["candidates"][0]['place_id'])
+        district = next(iter([p["long_name"] for p in place_details["result"]["address_components"] if "administrative_area_level_2" in p["types"]]))
+        hospital_lookup[hospital] = district
+    print("Uploading hospital data")
+    s3.put_object(Bucket=bucket, Key=hospital_lookup_key, Body=bytes(json.dumps(hospital_lookup), "UTF-8"))
+    return hospital_lookup
 
 
 def fill_empties(data):
@@ -43,18 +70,10 @@ def merge(d, u):
     return d
 
 
-def map_district_to_deaths(deaths):
-    gmaps = googlemaps.Client(key=os.getenv("GOOGLE_PLACES_API_KEY"))
+def map_district_to_deaths(hospital_lookup, deaths):
     districts_deaths_per_day = {}
     for hospital in deaths.keys():
-        places = find_place(gmaps, [hospital], "textquery", fields=["place_id"])
-        if len(places["candidates"]) == 0:
-            print(f"Warning could not find address for {hospital}. Skipping...")
-            continue
-        place_details = place(gmaps, places["candidates"][0]['place_id'], fields=["address_component"])
-        district = next(iter([p["long_name"] for p in place_details["result"]["address_components"] if "administrative_area_level_2" in p["types"]]))
-        if len(places) > 1:
-            print(f"Using {district} more than one address for {hospital}, using data {', '.join([p['short_name'] for p in place_details['result']['address_components']])}")
+        district = hospital_lookup[hospital]
         if district in districts_deaths_per_day:
             districts_deaths_per_day[district] = {date: {"deathsDaily": districts_deaths_per_day[district][date]["deathsDaily"] or 0 + deaths[hospital][date]} or 0 for date in deaths[hospital].keys()}
         else:
