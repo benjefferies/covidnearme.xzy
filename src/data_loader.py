@@ -48,6 +48,8 @@ def get_hospital_to_district(s3, deaths):
             continue
         place_details = place(gmaps, places["candidates"][0]['place_id'])
         district = next(iter([p["long_name"] for p in place_details["result"]["address_components"] if "administrative_area_level_2" in p["types"]]))
+        if len(places) > 1:
+            print(f"Using {district} more than one address for {hospital}, using data {', '.join([p['short_name'] for p in place_details['result']['address_components']])}")
         hospital_lookup[hospital] = district
     print("Uploading hospital data")
     s3.put_object(Bucket=bucket, Key=hospital_lookup_key, Body=bytes(json.dumps(hospital_lookup), "UTF-8"))
