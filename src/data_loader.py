@@ -41,7 +41,9 @@ def get_hospital_to_district(s3, deaths):
         if e.response['Error']['Code'] == "404":
             print(f"File {hospital_lookup_key} does not exist yet")
     new_hospitals = deaths.keys() - hospital_lookup.keys()
+    print(f"Need to look up hospitals {new_hospitals}")
     for hospital in new_hospitals:
+        print(f"Looking up hospital {hospital}")
         places = find_place(gmaps, [hospital], "textquery", fields=["place_id"])
         if len(places["candidates"]) == 0:
             print(f"Warning could not find address for {hospital}. Skipping...")
